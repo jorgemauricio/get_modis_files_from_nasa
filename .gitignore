@@ -131,4 +131,9 @@ dmypy.json
 # folders
 data
 results
+
+# access file
 access.py
+
+# hdf files
+*.hdf
