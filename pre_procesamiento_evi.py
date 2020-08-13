@@ -114,7 +114,7 @@ def main():
         titulo_archivo = "{}-{}-{}_EVI.csv".format(anio, mes, dia)
 
         # exportar df a csv
-        df.to_csv("results/{}".format(titulo_archivo), index=False)
+        df.to_csv("processing/{}".format(titulo_archivo), index=False)
 
         # print file
         print(titulo_archivo)
@@ -123,13 +123,13 @@ def main():
     frames = []
 
     # lista de archivos procesados
-    lista = [x for x in os.listdir("results") if x.endswith("EVI.csv")]
+    lista = [x for x in os.listdir("processing") if x.endswith("EVI.csv")]
 
     # generar un solo archivo
     resultado = pd.concat(frames)
 
     # guardar a csv
-    resultado.to_csv("compilado_EVI.csv")
+    resultado.to_csv("results/compilado_EVI.csv")
 
 
 if __name__ == '__main__':

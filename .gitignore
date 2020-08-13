@@ -131,6 +131,7 @@ dmypy.json
 # folders
 data
 results
+processing
 
 # access file
 access.py
