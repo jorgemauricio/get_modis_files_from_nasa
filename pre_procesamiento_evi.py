@@ -12,11 +12,11 @@
 
 # libreria
 import time
-import datetime
 import os
 import re
 import pandas as pd
 import numpy as np
+import datetime
 from pyhdf.SD import SD, SDC
 
 # funcion main
@@ -33,6 +33,8 @@ def main():
 
     # ciclo de procesamiento
     for archivo in lista_de_archivos:
+        # init timer
+        start_time = time.time()
         # generar nombres
         tipo, fecha, coleccion, produccion, extension = archivo.split(".")
         anio      = int(fecha[1:5])
@@ -119,11 +121,11 @@ def main():
         # print file
         print(titulo_archivo)
 
-    # frames
-    frames = []
+        # end time
+        print("Tiempo de procesamiento: ", time.time() - start_time)
 
     # lista de archivos procesados
-    lista = [x for x in os.listdir("processing") if x.endswith("EVI.csv")]
+    frames = [x for x in os.listdir("processing") if x.endswith("EVI.csv")]
 
     # generar un solo archivo
     resultado = pd.concat(frames)
