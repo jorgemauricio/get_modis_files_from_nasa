@@ -124,8 +124,17 @@ def main():
         # end time
         print("Tiempo de procesamiento: ", time.time() - start_time)
 
+
+    # frames
+    frames = []
+
     # lista de archivos procesados
-    frames = [x for x in os.listdir("processing") if x.endswith("EVI.csv")]
+    files = [x for x in os.listdir("processing") if x.endswith("EVI.csv")]
+
+    # loop
+    for file in files:
+        temp = pd.read_csv("processing/{}".format(file))
+        frames.append(temp)
 
     # generar un solo archivo
     resultado = pd.concat(frames)
