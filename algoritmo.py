@@ -19,6 +19,10 @@ import requests
 from bs4 import BeautifulSoup
 import urllib.request
 import os
+import time
+import re
+import datetime
+from pyhdf.SD import SD, SDC
 from access import usr, pwd
 
 def main():
@@ -62,7 +66,7 @@ def main():
 
 
     # create session with the user credentials that will be used to authenticate access to the data
-    session = SessionWithHeaderRedirection(usr, pwd)
+    session = SessionWithHeaderRedirection(access.usr, access.pwd)
 
     # the url of the file we wish to retrieve
     url = "https://e4ftl01.cr.usgs.gov/MOLA/MYD13C1.006/"
