@@ -19,6 +19,10 @@ import requests
 from bs4 import BeautifulSoup
 import urllib.request
 import os
+import time
+import re
+import datetime
+from pyhdf.SD import SD, SDC
 from access import usr, pwd
 
 def main():
@@ -128,9 +132,7 @@ def main():
         if last_file.strip() == URL_DESCARGA.strip():
             # print status
             print("no update")
-
         else:
-
             print("* * * ", last_file)
             print("* * * ", URL_DESCARGA)
             # download file
@@ -142,9 +144,8 @@ def main():
 
             text_file.close()
 
+            # move the downloaded file
             os.system("mv {} /home/jorge/Documents/Research/get_modis_files_from_nasa/data/".format(nombre_archivo))
-
-            print("mv {} /home/jorge/Documents/Research/get_modis_files_from_nasa/data/{}".format(nombre_archivo, nombre_archivo))
 
     except requests.exceptions.HTTPError as e:
 
