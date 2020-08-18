@@ -66,7 +66,7 @@ def main():
 
 
     # create session with the user credentials that will be used to authenticate access to the data
-    session = SessionWithHeaderRedirection(access.usr, access.pwd)
+    session = SessionWithHeaderRedirection(usr, pwd)
 
     # the url of the file we wish to retrieve
     url = "https://e4ftl01.cr.usgs.gov/MOLA/MYD13C1.006/"
@@ -173,7 +173,7 @@ def generar_evi(nombre_archivo):
     # init timer
     start_time = time.time()
     # generar nombres
-    tipo, fecha, coleccion, produccion, extension = archivo.split(".")
+    tipo, fecha, coleccion, produccion, extension = nombre_archivo.split(".")
     anio      = int(fecha[1:5])
     dia       = int(fecha[5:])
     new_fecha = datetime.date(anio,1,1) + datetime.timedelta(dia)
@@ -261,9 +261,9 @@ def generar_evi(nombre_archivo):
     # end time
     print("Tiempo de procesamiento: ", time.time() - start_time)
 
-def generar_nvdi():
+def generar_nvdi(nombre_archivo):
     # constantes
-    DATAFIELD_NAME  = "CMG 0.05 Deg 16 days NVDI"
+    DATAFIELD_NAME  = "CMG 0.05 Deg 16 days NDVI"
     LONG_MIN        = -118.2360
     LONG_MAX        = -86.1010
     LAT_MIN         = 12.3782
@@ -273,7 +273,7 @@ def generar_nvdi():
     # init timer
     start_time = time.time()
     # generar nombres
-    tipo, fecha, coleccion, produccion, extension = archivo.split(".")
+    tipo, fecha, coleccion, produccion, extension = nombre_archivo.split(".")
     anio      = int(fecha[1:5])
     dia       = int(fecha[5:])
     new_fecha = datetime.date(anio,1,1) + datetime.timedelta(dia)
