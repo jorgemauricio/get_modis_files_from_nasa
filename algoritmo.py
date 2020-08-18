@@ -22,8 +22,9 @@ import os
 import time
 import re
 import datetime
+import pyodbc
 from pyhdf.SD import SD, SDC
-from access import usr, pwd
+from access import usr, pwd, server, database, usr_db, pwd_db
 
 def main():
 
@@ -153,7 +154,14 @@ def main():
             generar_evi(nombre_archivo)
 
             # run ndvi
-            generar_nvdi(nombre_archivo)
+            anio, mes, dia = generar_nvdi(nombre_archivo)
+            
+            # insert evi to sql
+            insert_evi_to_sql(anio, mes, dia)
+            
+            # insert ndvi to sql
+            insert_ndvi_to_sql(anio, mes, dia)
+            
 
     except requests.exceptions.HTTPError as e:
 
@@ -260,6 +268,7 @@ def generar_evi(nombre_archivo):
 
     # end time
     print("Tiempo de procesamiento: ", time.time() - start_time)
+    
 
 def generar_nvdi(nombre_archivo):
     # constantes
@@ -360,6 +369,76 @@ def generar_nvdi(nombre_archivo):
 
     # end time
     print("Tiempo de procesamiento: ", time.time() - start_time)
+    
+    return anio, mes, dia
+
+def insert_evi_to_sql(anio, mes, dia):
+    # datos de la conexión
+    conn = pyodbc.connect('DRIVER={/opt/microsoft/msodbcsql17/lib64/libmsodbcsql-17.3.so.1.1};SERVER='+server+';DATABASE='+database+';UID='+usr_db+';PWD='+ pwd_db)
+    cursor =  conn.cursor()
+    
+    nombre_del_archivo = "/home/jorge/Documents/Research/get_modis_files_from_nasa/processing/{}-{}-{}_EVI.csv".format(anio, mes, dia)
+    
+    df = pd.read_csv(nombre_del_archivo)
+    
+    df["temp"] = "{}-{}-{}".format(anio, mes, dia)
+    
+    df["fecha"] = pd.to_datetime(df["temp"])
+    
+    # delete temp column
+    del df["temp"]
+
+    for index, row in df.iterrows():
+        """lon, lat, value, fecha"""
+        
+        LATS    = row["lat"]
+        LONS    = row["lon"]
+        VALUE   = row["value"]
+        FECHA   = row["fecha"]
+        
+
+        # generar query
+        query = "INSERT INTO EVI (lat, lon, valor, fecha) VALUES ((?),(?), (?), (?))"
+        # ejecutar insert
+        print(query)
+        cursor.execute(query, (LATS, LONS, VALUE, FECHA))
+        cursor.commit()
+    conn.close()
+    print("OK...")
+    
+def insert_ndvi_to_sql(anio, mes, dia):
+    # datos de la conexión
+    conn = pyodbc.connect('DRIVER={/opt/microsoft/msodbcsql17/lib64/libmsodbcsql-17.3.so.1.1};SERVER='+server+';DATABASE='+database+';UID='+usr_db+';PWD='+ pwd_db)
+    cursor =  conn.cursor()
+    
+    nombre_del_archivo = "/home/jorge/Documents/Research/get_modis_files_from_nasa/processing/{}-{}-{}_NDVI.csv".format(anio, mes, dia)
+    
+    df = pd.read_csv(nombre_del_archivo)
+    
+    df["temp"] = "{}-{}-{}".format(anio, mes, dia)
+    
+    df["fecha"] = pd.to_datetime(df["temp"])
+    
+    # delete temp column
+    del df["temp"]
+
+    for index, row in df.iterrows():
+        """lon, lat, value, fecha"""
+        
+        LATS    = row["lat"]
+        LONS    = row["lon"]
+        VALUE   = row["value"]
+        FECHA   = row["fecha"]
+        
+
+        # generar query
+        query = "INSERT INTO NDVI (lat, lon, valor, fecha) VALUES ((?),(?), (?), (?))"
+        # ejecutar insert
+        print(query)
+        cursor.execute(query, (LATS, LONS, VALUE, FECHA))
+        cursor.commit()
+    conn.close()
+    print("OK...")
 
 
 if __name__ == '__main__':
